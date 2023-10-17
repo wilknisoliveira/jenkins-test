@@ -1,7 +1,19 @@
 pipeline {
     agent any
+    environment {
+        OTHER = 'Global variable'
+    }
+    parameters {
+        string(name: 'BRANCH', defaultValue: 'Master', description: 'Branch name')
+    }
     stages {
         stage('step 1'){
+            environment {
+                ANY = 'Local variable'
+            }
+            when {
+                expression = { BRANCH ==~ /(dev)/ }
+            }
             steps {
                 echo 'step 1'
             }
@@ -22,6 +34,9 @@ pipeline {
         }
 
         stage('step 3'){
+            when {
+                expression { BRANCH ==~ /(main|dev)/ }
+            }
             steps {
                 echo 'step 3'
             }
